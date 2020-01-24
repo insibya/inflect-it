@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import inflect from 'inflect';
 
-const WordList = ({ wordList }) => {
+const WordList = ({ wordList, setWordList }) => {
 	return (
 		<ul>
 			{wordList.map((word, idx) => {
 				return (
-					<ul key={idx}>
-						<li key={2000 + idx}>{`${word.sing} (singular)`}</li>
-						<li key={1000 + idx}>{`${word.plur} (plural)`}</li>
-						<button>X</button>
-					</ul>
+					<li key={idx}>
+						<div>{`${word.sing} (singular)`}</div>
+						<div>{`${word.plur} (plural)`}</div>
+						<button
+							onClick={() => {
+								const filteredList = wordList.filter((_word) => _word.sing !== word.sing);
+								setWordList(filteredList);
+							}}
+						>
+							X
+						</button>
+					</li>
 				);
 			})}
 		</ul>
@@ -31,14 +38,14 @@ function App() {
 						sing: newWord,
 						plur: inflect.pluralize(newWord)
 					};
-					setWordList(...wordList, newEntry);
+					setWordList([ ...wordList, newEntry ]);
 					setNewWord('');
 				}}
 			>
 				<input type="text" value={newWord} onChange={(ev) => setNewWord(ev.target.value)} />
 				<input type="submit" disabled={!newWord} value="Submit" />
 			</form>
-			<WordList wordList={wordList} />
+			<WordList wordList={wordList} setWordList={setWordList} />
 		</main>
 	);
 }
